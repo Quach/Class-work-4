@@ -19,20 +19,19 @@ def gh(param):
 
 	return param > 3
 
+def sum(a, b):
+    return a + b
+
 def my_reduce(func, iterator):
     "reduce generator"
 
-    while True:
-        if len(iterator) == 1:
-            yield iterator
-            return
-        if len(iterator) == 2:
-            yield func(iterator)
-            return
-        if len(iterator) > 2:
-            res = func(iterator[:2])
-            yield res
-            iterator = [res] + iterator[2:]
+    if len(iterator) == 0:
+        return
+    res = iterator[0]
+
+    for i in iterator[1:]:
+        res = func(res, i)
+        yield res
 
 def iter_lines(fd):
     "somthing to do"
@@ -63,8 +62,6 @@ def drop_empty(iter):
 	for str1 in iter:
 		if str1 != "":
 			yield str1
-		else:
-			continue 
 
 def split_items(iter):
     "split every line on int/float/string sequince"
@@ -80,7 +77,7 @@ def split_items(iter):
             twopoints = False
             for ch in substr:
                 if ch == '.':
-                    if twopoints == False:
+                    if not twopoints:
                         twopoints = True
                         break
                     else:
@@ -99,7 +96,7 @@ def get_ints(iter):
 	"yield only ints"
 
 	for srt8 in iter:
-		if type(srt8) == int:
+		if type(srt8) is int:
 			yield srt8
 
 def my_sum(iter):
@@ -123,12 +120,12 @@ def main():
     assert next(gen) == 4
     assert next(gen) == 5
     assert next(gen) == 6
-    gen = my_reduce(sum, [1,1,1,1,1,1])
-    assert next(gen) == 2
+    gen = my_reduce(sum, [1,2,1,1,1,1])
     assert next(gen) == 3
     assert next(gen) == 4
     assert next(gen) == 5
     assert next(gen) == 6
+    assert next(gen) == 7
     #assert list(iter_lines("text.txt")) == ["1 2 3 3.45 abra_cadabra   ", "", "12"]
     #assert list(strip_spaces(["1 2 3 3.45 abra_cadabra   ", "", "12"])) == ["1 2 3 3.45 abra_cadabra", "", "12"]
     #assert list(drop_empty(["1 2 3 3.45 abra_cadabra", "", "12"])) == ["1 2 3 3.45 abra_cadabra", "12"]
